@@ -76,6 +76,6 @@ def site_downloader(vid_links, index, custom_name= None, custom_path= None):
             path = f"{Path().resolve()}"
         else:
             path = custom_path
-        open(f'{path}{name}.mp4', 'wb').write(media)
+        open(f'{path}\{name}.mp4', 'wb').write(media)
     else:
         raise(ValueError, "No media links on this page")
