@@ -1,6 +1,6 @@
 ## This is the Web Video Parser (and downloader) - UWVP
 
-PLEASE, BEFORE USAGE, READ THE DOCUMENTATION IN FULL!!! <br />
+Please, before usage, read the DOCUMENTATION <br />
 
 # Instalation
 
