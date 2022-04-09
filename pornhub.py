@@ -23,7 +23,7 @@ def get_resolutions(url):
         else:
             list_index += 1
             res_list.append('')
-    
+
     return res_list
 
 def pornhub_info(url):
@@ -34,7 +34,7 @@ def pornhub_info(url):
 
     else:
         raise(ValueError, "Wrong pornhub link: maybe this link is not a video link, but channel or playlist and etc.")
-    
+
     api = PornhubApi()
     vid_id = url[url.index('=')+1:]
     video = api.video.get_by_id(vid_id).video
@@ -43,13 +43,13 @@ def pornhub_info(url):
     for res in res_list:
         text = f"{text+res}p, "
     text = text[:-2]
-    
+
     return text
 
 def pornhub_downloader(url, res, audio_only = False, video_only = False, custom_name = None, custom_path = None):
     resolutions = ['2160','1440','1080','720','480','360','240']
     if custom_path is None:
-        video_path = "./downloads/"
+        video_path = "~/downloads/"
     else:
         video_path = custom_path
 

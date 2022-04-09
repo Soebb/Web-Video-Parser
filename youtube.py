@@ -89,7 +89,7 @@ def youtube_downloader(url, res, res_tags, audio_tag = None, audio_only = False,
     res_tag = res_tags[res]
     yt_streams = YouTube(url).streams
 
-    video_path = './downloads/video.mp4'
+    video_path = '~/downloads/video.mp4'
     if "youtube.com/watch?v=" in url or "youtu.be/" in url:
         if custom_name is None:
             output_name = yt_streams.get_by_itag(res_tag).default_filename.replace(" ", "_").replace("&", "_")
@@ -97,7 +97,7 @@ def youtube_downloader(url, res, res_tags, audio_tag = None, audio_only = False,
             output_name = custom_name
         
         if custom_path is None:
-            path = './downloads'
+            path = '~/downloads'
         else:
             path = custom_path
     
@@ -116,7 +116,7 @@ def youtube_downloader(url, res, res_tags, audio_tag = None, audio_only = False,
 
         else:
 
-            audio_path = './downloads/audio.webm'
+            audio_path = '~/downloads/audio.webm'
             yt_streams.get_by_itag(audio_tag).download(output_path = path, filename='audio.webm')
             if audio_only:
                 cmd = f"ffmpeg -i {audio_path} {output_name}"
