@@ -57,7 +57,7 @@ Commands `-o` and `-r` work only with youtube and pornhub links:
 And command `-i` works only with unsupported sites, which has no API, then algorithm gets all video links from site and returns
 indexes for media with `--info` command:
 ```bash
-| python uwvp.py | гкд | -i | -index      | index                           | Choosing the media file link from site by index |
+| python uwvp.py | url | -i | -index      | index                           | Choosing the media file link from site by index |
 ```
 
 # Thanks To The Developers Of
