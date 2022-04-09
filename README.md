@@ -1,7 +1,5 @@
 ## This is the Web Video Parser (and downloader) - UWVP
 
-Please, before usage, read the DOCUMENTATION <br />
-
 # Instalation
 
 Recommended using python versions 3.10+ <br />
