@@ -32,6 +32,8 @@ Downloading code files and libraries Done! <br />
 
 # Usage
 
+Important: `--help` does not work yet, use documentation. <br />
+
 You can type commands in no particular order <br />
 Except `--help` and `--info`, they have to stand as shown in the table and no commands after them will be used. <br />
 Also, `--help` doesn't get url. <br />
@@ -59,6 +61,15 @@ indexes for media with `--info` command:
 ```bash
 | python uwvp.py | url | -i | -index      | index                           | Choosing the media file link from site by index |
 ```
+
+BY DEFAULT:
+
+ - video from youtube and pornhub downloads in the highest quality <br />
+ - video from youtube and pornhub downloads with video and audio <br />
+ - name for output media from unknown sites generates randomly <br />
+ - name for output media from youtube and pornhub generates by video title <br />
+ - path for output media is in the directory where the script installed <br />
+ - index for media from unknown site is None, means that with no given index you'll get the exception <br />
 
 # Thanks To The Developers Of
 
