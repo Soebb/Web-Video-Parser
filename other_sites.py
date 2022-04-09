@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup
 import random
+from pathlib import Path
 
 def site_parser(url):
     formats = ['.3gp','.asf','.avi','.flv','.m2ts',
@@ -72,7 +73,7 @@ def site_downloader(vid_links, index, custom_name= None, custom_path= None):
             name = custom_name
         
         if custom_path is None:
-            path = "./downloads/"
+            path = f"{Path().resolve()}"
         else:
             path = custom_path
         open(f'{path}{name}.mp4', 'wb').write(media)

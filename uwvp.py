@@ -106,7 +106,7 @@ def main():
 
                     elif cmd[i] == '--info':
                         if len(cmd) > 3:
-                            print("Warning: arguments after --info won't be used")
+                            print("Warning: commands after --info won't be used")
                         print(info_loader(cmd[1]))
                         sys.exit()
 

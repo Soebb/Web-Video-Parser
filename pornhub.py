@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 from pornhub_api import PornhubApi
 import youtube_dl
+from pathlib import Path
 
 def get_resolutions(url):
     numbers = ['0','1','2','3','4','5','6','7','8','9']
@@ -49,9 +50,9 @@ def pornhub_info(url):
 def pornhub_downloader(url, res, audio_only = False, video_only = False, custom_name = None, custom_path = None):
     resolutions = ['2160','1440','1080','720','480','360','240']
     if custom_path is None:
-        video_path = "~/downloads/"
+        output_path = f"{Path().resolve()}/downloads/"
     else:
-        video_path = custom_path
+        output_path = custom_path
 
     if '/view_video.php?viewkey=' in url:
         if res == 'best' or res in resolutions or res is None:
@@ -71,7 +72,7 @@ def pornhub_downloader(url, res, audio_only = False, video_only = False, custom_
 
             try:
                 opts = {'format': format,
-                        'outtmpl': f'{video_path}output.mp4',
+                        'outtmpl': f'{output_path}output.mp4',
                         'ignoreerrors': True,
                         'nowarnings': True,
                         'nooverwrites': True}
@@ -87,15 +88,15 @@ def pornhub_downloader(url, res, audio_only = False, video_only = False, custom_
         raise(ValueError, "Wrong pornhub link: maybe this link is not a video link, but channel or playlist and etc.")
     
     if video_only:
-        cmd = f"ffmpeg -i {video_path}output.mp4 -c:v copy -an {video_path + title}.mp4"
+        cmd = f"ffmpeg -i {output_path}output.mp4 -c:v copy -an {output_path + title}.mp4"
         os.system(cmd)
         return "Video download complete!"
     elif audio_only:
-        cmd = f"ffmpeg -i {video_path}output.mp4 -c:a copy -vn {video_path + title}.mp4"
+        cmd = f"ffmpeg -i {output_path}output.mp4 -c:a copy -vn {output_path + title}.mp4"
         os.system(cmd)
         return "Audio download complete!"
     else:
-        os.rename(f"{video_path}output.mp4", f"{video_path + title}.mp4")
+        os.rename(f"{output_path}output.mp4", f"{output_path + title}.mp4")
         return "Video and audio download complete!"
 
 pornhub_info('https://rt.pornhub.com/view_video.php?viewkey=ph61b3097a3bcca')
