@@ -25,7 +25,8 @@ If you are on Linux, just use Pacman or Apt:
 2. $ sudo apt-get install ffmpeg  'for Ubuntu'
 ```
 
-It's used for output files processing
+`ffmpeg` is using for output media processing.
+
 
 Downloading code files and libraries Done! <br />
 
