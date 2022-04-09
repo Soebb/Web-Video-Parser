@@ -1,4 +1,4 @@
-## This is the Web Video Parser (and downloader) - UWVP
+## This is the Ultimate Web Video Parser - UWVP
 
 # Instalation
 
