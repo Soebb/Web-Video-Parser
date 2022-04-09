@@ -40,25 +40,24 @@ Then, don't type one command twice, only first will be used. <br />
 
 Base commands, wich work with any type of url: <br />
 ```bash
-+----------------+-----+------------------+---------------------------------+------------------------------------------------+
 | Tool           | Url | Command          | Argument                        | Description                                    |
 +----------------+-----+------------------+---------------------------------+------------------------------------------------+
-| python uwvp.py | no  | --help           | all | youtube | pornhub | other | Returns documentation for input item           |
-| -------------- | url | --info           |                                 | Returns information about page                 |
-| -------------- | --- | -n | -name       | custom_name                     | Changes the name of the output media file      |
-| -------------- | --- | -p | -path       | custom_path                     | Changes the path of the output media file      |
+| python uwvp.py | --- | --help           | all | youtube | pornhub | other | Returns documentation for input item           |
+| python uwvp.py | url | --info           |                                 | Returns information about page                 |
+| python uwvp.py | url | -n | -name       | custom_name                     | Changes the name of the output media file      |
+| python uwvp.py | url | -p | -path       | custom_path                     | Changes the path of the output media file      |
 ```
 
 Commands `-o` and `-r` work only with youtube and pornhub links:
 ```bash
-| -------------- | --- | -o | -option     | video_only | audio_only         | Deletes audio or video from output media file  |
-| -------------- | --- | -r | -resolution | 144 | 240 | .... | 2160         | Changes resolution of the output media file    |
+| python uwvp.py | url | -o | -option     | video_only | audio_only         | Deletes audio or video from output media file  |
+| python uwvp.py | url | -r | -resolution | 144 | 240 | .... | 2160         | Changes resolution of the output media file    |
 ```
 
 And command `-i` works only with unsupported sites, which has no API, then algorithm gets all video links from site and returns
 indexes for media with `--info` command:
 ```bash
-| -------------- | --- | -i | -index      | index                           | Choosing the media file link from site by index |
+| python uwvp.py | гкд | -i | -index      | index                           | Choosing the media file link from site by index |
 ```
 
 # Thanks To The Developers Of
