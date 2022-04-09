@@ -14,7 +14,7 @@ The instalation with git: <br />
 3. $ python -m pip install -r requirements.txt
 ```
 
-Also, you have to download the `ffmeg` on your machine. <br />
+Also, you have to download the `ffmpeg` on your machine. <br />
 
 If you are on Windows you have get the latest build version for Windows from this [repository](https://github.com/BtbN/FFmpeg-Builds/releases).
 And `ffmpeg` has to be installed into PATH. You can read this [article](https://windowsloop.com/install-ffmpeg-windows-10/#add-ffmpeg-to-Windows-path) with information how to do it. <br />
