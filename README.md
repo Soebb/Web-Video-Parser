@@ -32,7 +32,7 @@ Downloading code files and libraries Done! <br />
 
 # Usage
 
-Important: `--help` does not work yet, use documentation. <br />
+IMPORTANT: `--help` does not work yet, use documentation. <br />
 
 You can type commands in no particular order <br />
 Except `--help` and `--info`, they have to stand as shown in the table and no commands after them will be used. <br />
@@ -70,6 +70,14 @@ BY DEFAULT:
  - name for output media from youtube and pornhub generates by video title <br />
  - path for output media is in the directory where the script installed <br />
  - index for media from unknown site is None, means that with no given index you'll get the exception <br />
+
+# Plans
+
+- Bug fixes and adding features for already supported sites <br />
+- Trying to use Selenium to get media files by doing activity on site <br />
+- Also making configs for sites which have no media links on page by default (Selenium automatization) <br />
+- Make builds for each os, to not using `python uwvp.py` every time
+- GUI for average users
 
 # Thanks To The Developers Of
 
