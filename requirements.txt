@@ -3,3 +3,4 @@ requests
 beautifulsoup4
 pornhub-api
 youtube-dl
+selenium
