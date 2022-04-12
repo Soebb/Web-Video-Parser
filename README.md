@@ -44,7 +44,7 @@ Base commands, wich work with any type of url: <br />
 ```bash
 | Tool           | Url | Command          | Argument                        | Description                                    |
 +----------------+-----+------------------+---------------------------------+------------------------------------------------+
-| python uwvp.py | --- | --help           | all | youtube | pornhub | other | Returns documentation for input item           |
+| python uwvp.py |     | --help           | all | youtube | unknown_site... | Returns documentation for input item           |
 | python uwvp.py | url | --info           |                                 | Returns information about page                 |
 | python uwvp.py | url | -n | -name       | custom_name                     | Changes the name of the output media file      |
 | python uwvp.py | url | -p | -path       | custom_path                     | Changes the path of the output media file      |
@@ -56,7 +56,7 @@ Commands `-o` and `-r` work only with youtube and pornhub links:
 | python uwvp.py | url | -r | -resolution | 144 | 240 | .... | 2160         | Changes resolution of the output media file    |
 ```
 
-And command `-i` works only with unsupported sites, which has no API, then algorithm gets all video links from site and returns
+And command `-i` works only with unsupported sites, which has no API, and algorithm gets all video links from site and returns
 indexes for media with `--info` command:
 ```bash
 | python uwvp.py | url | -i | -index      | index                           | Choosing the media file link from site by index |

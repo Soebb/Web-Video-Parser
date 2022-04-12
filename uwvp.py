@@ -1,85 +1,106 @@
 import sys
+import os
 import requests
-from youtube import *
-from pornhub import *
-from other_sites import *
 
+module_names = []
+docs_by_module = {}
 
 def url_check(url):
+    check = requests.head(url)
     try:
-        requests.get(str(url))
-        requests.delete(str(url))
-        return True
-    except ValueError:
-        print("This url is invalid")
-
-def get_url_type(url):
-    if 'youtube' in url or 'youtu.be' in url:
-        return 'youtube'
-    if 'pornhub' in url:
-        return 'pornhub'
-    else:
-        return 'unknown'        
-
-def docs(request):
-    return request
-
-def info_loader(url):
-    if get_url_type(url) == 'youtube':
-        return youtube_info(url)
-    elif get_url_type(url) == 'pornhub':
-        return pornhub_info(url)
-    else:
-        return site_info(url)
-
-def download(url, opts):
-    if url_check(url):
-        url_type = get_url_type(url)
-        if url_type == 'youtube':
-            parsed_ytpage = youtube_parser(url)
-            res_list = parsed_ytpage[0]
-            res_tags = parsed_ytpage[1]
-            audio_itag = parsed_ytpage[3]
-            if opts['resolution'] == "best":
-                return youtube_downloader(url, res_list[-1], res_tags, audio_tag = audio_itag,
-                                        audio_only = opts['audio_only'], video_only = opts['video_only'],
-                                        custom_name = opts['name'], custom_path = opts['path'])
-            else:
-                return youtube_downloader(url, opts['resolution'], res_tags, audio_tag = audio_itag,
-                                        audio_only = opts['audio_only'], video_only = opts['video_only'],
-                                        custom_name = opts['name'], custom_path = opts['path'])
-        elif url_type == 'pornhub':
-            if opts['resolution'] == "best":
-                resolutions = ['2160','1440','1080','720','480','360','240']
-                video_ress = get_resolutions(url)
-                for res in resolutions:
-                    if res in video_ress:
-                        resolution = res
-                        break
-                return pornhub_downloader(url, resolution, audio_only = opts['audio_only'],
-                                        video_only = opts['video_only'], custom_name = opts['name'],
-                                        custom_path = opts['path'])
+        if check.status_code == 200:
+            return True
         else:
-            if opts['index'] is not None:
-                return site_downloader(site_parser(url), int(opts['index'])-1, custom_name = opts['name'], custom_path = opts['path'])
-            else:
-                raise(ValueError, "You didn't type the index of video file, to know indexes use --info on your link")
+            raise(ValueError)
+    except ValueError:
+        return f"Invalid url: respose gets {check.status_code} error"
 
-def main():
+for site_file in os.scandir('SupportedSites'):
+    if site_file.is_file():
+        module_names.append(site_file.name[:-3])
+        string = f"from SupportedSites.{site_file.name[:-3]} import *"
+        exec(string)
+
+opt_able_sites = []
+res_able_sites = []
+idx_able_sites = []
+url = sys.argv[1]
+url_type = None
+for module in module_names:
+    if url_type is not None:
+        break
+    string = f'''
+
+if {module}_opt_func_check():
+    opt_able_sites.append('{module}')
+if {module}_res_func_check():
+    res_able_sites.append('{module}')
+if {module}_idx_func_check():
+    idx_able_sites.append('{module}')
+
+check = {module}_check(url)
+if check:
+    url_type = module
+docs_by_module['{module}'] = {module}_get_docs()
+'''
+    exec(string)
+if url_type is None:
+    url_type = 'unknown_site'
+
+docs_by_module['all'] = f'''
+Base commands, wich work with any type of url:
++----------------+------------------------+---------------------------------+------------------------------------------------+
+| Tool           | Url | Command          | Argument                        | Description                                    |
++----------------+-----+------------------+---------------------------------+------------------------------------------------+
+| python uwvp.py |     | --help           | all | youtube | unknown_site... | Returns documentation for input item           |
+| python uwvp.py | url | --info           |                                 | Returns information about page                 |
+| python uwvp.py | url | -n | -name       | custom_name                     | Changes the name of the output media file      |
+| python uwvp.py | url | -p | -path       | custom_path                     | Changes the path of the output media file      |
++----------------+-----+------------------+---------------------------------+------------------------------------------------+
+
+Command -o works with {str(opt_able_sites)[1:-1]} links:
++----------------+-----+------------------+---------------------------------+------------------------------------------------+
+| python uwvp.py | url | -o | -option     | video_only | audio_only         | Removes audio or video from output media file  |
++----------------+-----+------------------+---------------------------------+------------------------------------------------+
+
+Command -r works with {str(res_able_sites)[1:-1]} links:
++----------------+-----+------------------+---------------------------------+------------------------------------------------+
+| python uwvp.py | url | -r | -resolution | 144 | 240 | .... | 2160         | Changes resolution of the output media file    |
++----------------+-----+------------------+---------------------------------+------------------------------------------------+
+
+And command -i works only with {str(idx_able_sites)[1:-1]}, where algorithm gets all video links from site
+and returns indexes for media with --info command:
++----------------+-----+------------------+---------------------------------+------------------------------------------------+
+| python uwvp.py | url | -i | -index      | index                           | Choosing the media file link from              |
++----------------+-----+------------------+---------------------------------+------------------------------------------------+
+'''
+
+def docs(docs_dict, site):
+    try:
+        print(docs_dict[site])
+    except KeyError:
+        print(f"No supported site called {site}")
+
+def get_url_info(url):
+    string = f"print({url_type}_info('{url}'))"
+    exec(string)
+    sys.exit()
+
+def downloader(url, opts):
+    if url_check(url):
+        string = f"{url_type}_downloader('{url}',{opts})"
+        exec(string)
+
+def main(docs_dict, url_type):
     cmd = sys.argv
 
     if len(cmd) > 1:
 
         if cmd[1] == '--help':
-            if len(cmd) > 1:
-                if cmd[1] == 'youtube':
-                    return docs('youtube')
-                if cmd[1] == 'pornhub':
-                    return docs('pornhub')
-                if cmd[1] == 'other':
-                    return docs('other')
+            if len(cmd) > 2:
+                return docs(docs_dict, cmd[2])
             else:
-                return docs('all')
+                return docs(docs_dict, 'all')
         
         elif url_check(cmd[1]):
             opts = {'video_only': False,
@@ -96,7 +117,6 @@ def main():
             index_flag = False
 
             if len(cmd) > 2:
-                url_type = get_url_type(cmd[1])
 
                 for i in range(2, len(cmd)):
 
@@ -106,15 +126,14 @@ def main():
 
                     elif cmd[i] == '--info':
                         if len(cmd) > 3:
-                            print("Warning: commands after --info won't be used")
-                        print(info_loader(cmd[1]))
+                            print("WARNING: commands after --info will be ignored")
+                        print(get_url_info(cmd[1]))
                         sys.exit()
 
                     elif cmd[i] == '-o' or cmd[i] == '-option':
                         if option_flag:
-                            print("Warning: other -o (-option) commands will be ignored")
-                        elif url_type == 'unknown':
-                            raise(ValueError, "-o (-optinon) command can't be used for Unknown type url")
+                            print("WARNING: other -o (-option) commands will be ignored")
+                            ignore_element = True
 
                         elif len(cmd) > i+1:
                             if cmd[i+1] == 'video_only':
@@ -122,18 +141,19 @@ def main():
                             elif cmd[i+1] == 'audio_only':
                                 opts['audio_only'] = True
                             else:
-                                raise(ValueError, f"-o (-option) command don't have {cmd[i]} argument")
+                                print(f"ERROR: -o (-option) command don't have {cmd[i]} argument")
+                                sys.exit()
+
                             option_flag = True
                             ignore_element = True
                         
                         else:
-                            raise(ValueError, "No arguments after -o (-option) command")
+                            print("ERROR: No arguments after -o (-option) command")
 
                     elif cmd[i] == '-r' or cmd[i] == '-resolution':
                         if resolution_flag:
-                            print("Warning: other -r (-resolution) commands will be ignored")
-                        elif url_type == 'unknown':
-                            raise(ValueError, "Can't get video by custom resolution from Unknown type url")
+                            print("WARNING: other -r (-resolution) commands will be ignored")
+                            ignore_element = True
 
                         elif len(cmd) > i+1:
                             opts['resolution'] = cmd[i+1]
@@ -141,11 +161,13 @@ def main():
                             ignore_element = True
 
                         else:
-                            raise(ValueError, "No arguments after -r (-resolution) command")
+                            print("ERROR: No arguments after -r (-resolution) command")
+                            sys.exit()
                     
                     elif cmd[i] == '-n' or cmd[i] == '-name':
                         if name_flag:
-                            print("Warning: other -n (-name) commands will be ignored")
+                            print("WARNING: other -n (-name) commands will be ignored")
+                            ignore_element = True
 
                         elif len(cmd) > i+1:
                             opts['name'] = cmd[i+1]
@@ -153,11 +175,13 @@ def main():
                             ignore_element = True
 
                         else:
-                            raise(ValueError, "No arguments after -n (-name) command")
+                            print("ERROR: No arguments after -n (-name) command")
+                            sys.exit()
                     
                     elif cmd[i] == '-p' or cmd[i] == '-path':
                         if path_flag:
-                            print("Warning: other -p (-path) commands will be ignored")
+                            print("WARNING: other -p (-path) commands will be ignored")
+                            ignore_element = True
 
                         elif len(cmd) > i+1:
                             opts['path'] = cmd[i+1]
@@ -165,13 +189,13 @@ def main():
                             ignore_element = True
 
                         else:
-                            raise(ValueError, "No arguments after -p (-path) command")
+                            print("ERROR: No arguments after -p (-path) command")
+                            sys.exit()
                     
                     elif cmd[i] == '-i' or cmd[i] == '-index':
                         if index_flag:
-                            print("Warning: other -i (-index) commands will be ignored")
-                        elif url_type != 'unknown':
-                            raise(ValueError, "You can get the video by index only for unknown type urls")
+                            print("WARNING: other -i (-index) commands will be ignored")
+                            ignore_element = True
 
                         elif len(cmd) > i+1:
                             opts['index'] = cmd[i+1]
@@ -179,15 +203,19 @@ def main():
                             ignore_element = True
 
                         else:
-                            raise(ValueError, "No arguments after -i (-index) command")
+                            print("ERROR: No arguments after -i (-index) command")
+                            sys.exit()
 
                     else:
-                        raise(ValueError, f"No command named {cmd[i]}")
+                        print(f"ERROR: No command called {cmd[i]}")
+                        sys.exit()
                 
-            return download(cmd[1], opts)
+            return downloader(cmd[1], opts)
 
     else:
-        raise(ValueError, "No arguments got")
+        print("ERROR: Got no arguments")
+        sys.exit()
+
 
 if __name__ == '__main__':
-    main()
+    main(docs_by_module, url_type)
